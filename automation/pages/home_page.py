@@ -1,0 +1,17 @@
+from __future__ import annotations
+
+from playwright.sync_api import expect
+
+from pages.base_page import BasePage
+
+
+class HomePage(BasePage):
+    def open_home(self) -> None:
+        self.open("actions/Catalog.action")
+
+    def assert_loaded(self) -> None:
+        expect(self.page.locator("body")).to_contain_text("JPetStore")
+
+    def go_to_sign_in(self) -> None:
+        self.page.get_by_role("link", name="Sign In").click()
+

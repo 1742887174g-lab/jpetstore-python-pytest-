@@ -1,0 +1,16 @@
+env: local
+base_url: "http://localhost:8080/jpetstore"
+browser:
+  name: chromium
+  headless: true
+  slow_mo_ms: 0
+  viewport:
+    width: 1366
+    height: 768
+timeouts:
+  default_ms: 10000
+test_users:
+  default:
+    username: "j2ee"
+    password: "j2ee"
+
