@@ -1,21 +1,36 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import allure
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page, sync_playwright
 
 from common.config import PROJECT_ROOT, Settings, load_settings
+from common.logger import configure_logging
+from common.test_data import load_test_data
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption("--headed", action="store_true", help="Run browser tests in headed mode.")
+    parser.addoption("--env", default=None, help="Environment config name under config/envs.")
+    parser.addoption("--base-url", default=None, help="Override JPetStore base URL.")
 
 
 @pytest.fixture(scope="session")
-def settings() -> Settings:
-    return load_settings()
+def settings(pytestconfig: pytest.Config) -> Settings:
+    settings = load_settings(
+        env=pytestconfig.getoption("--env"),
+        base_url=pytestconfig.getoption("--base-url"),
+    )
+    configure_logging(settings.logging)
+    return settings
+
+
+@pytest.fixture(scope="session")
+def test_data() -> dict[str, Any]:
+    return load_test_data()
 
 
 @pytest.fixture(scope="session")
@@ -69,4 +84,10 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo[object]):
         str(screenshot_path),
         name="failure-screenshot",
         attachment_type=allure.attachment_type.PNG,
+    )
+
+    allure.attach(
+        page.url,
+        name="failure-page-url",
+        attachment_type=allure.attachment_type.TEXT,
     )

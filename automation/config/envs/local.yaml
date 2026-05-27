@@ -1,0 +1,6 @@
+env: local
+base_url: "http://localhost:8080/jpetstore"
+test_users:
+  default:
+    username: "j2ee"
+    password: "j2ee"

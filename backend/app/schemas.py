@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 
-SuiteName = Literal["smoke", "ui", "api", "all"]
+SuiteName = Literal["smoke", "ui", "api", "regression", "all"]
 
 
 class TestRunRequest(BaseModel):
@@ -21,4 +21,3 @@ class TestRunResponse(BaseModel):
     finished_at: datetime
     duration_seconds: float
     allure_results_dir: str
-

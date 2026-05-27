@@ -13,4 +13,6 @@ test_users:
   default:
     username: "j2ee"
     password: "j2ee"
-
+logging:
+  level: "INFO"
+  file: "reports/logs/automation.log"
