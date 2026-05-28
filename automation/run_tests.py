@@ -7,15 +7,16 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+DEFAULT_ALLURE_RESULTS_DIR = PROJECT_ROOT / "reports" / "allure-results"
 
 
-def build_args(suite: str, headed: bool) -> list[str]:
+def build_args(suite: str, headed: bool, allure_results_dir: Path) -> list[str]:
     args = [
         sys.executable,
         "-m",
         "pytest",
         "--alluredir",
-        str(PROJECT_ROOT / "reports" / "allure-results"),
+        str(allure_results_dir),
     ]
     if suite == "smoke":
         args.extend(["-m", "smoke"])
@@ -39,9 +40,15 @@ def main() -> int:
     parser.add_argument("--headed", action="store_true")
     parser.add_argument("--env", help="Environment config name under config/envs.")
     parser.add_argument("--base-url", help="Override JPetStore base URL.")
+    parser.add_argument(
+        "--allure-results-dir",
+        type=Path,
+        default=DEFAULT_ALLURE_RESULTS_DIR,
+        help="Directory to store Allure raw results.",
+    )
     parsed = parser.parse_args()
 
-    command = build_args(parsed.suite, parsed.headed)
+    command = build_args(parsed.suite, parsed.headed, parsed.allure_results_dir)
     if parsed.env:
         command.extend(["--env", parsed.env])
     if parsed.base_url:

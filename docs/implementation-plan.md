@@ -62,6 +62,9 @@ cd E:\jpetstore-test
 - 保存 stdout / stderr，便于排查失败原因
 - 查询历史执行记录
 - 查询单次执行详情
+- 为每次执行生成独立 Allure 结果目录
+- 生成独立 Allure HTML 报告
+- 通过 `/reports/.../index.html` 暴露历史报告
 
 已实现接口：
 
@@ -100,6 +103,8 @@ backend/data/test_platform.db
 - 结束时间
 - 执行耗时
 - Allure 结果目录
+- Allure HTML 报告目录
+- Allure HTML 报告访问地址
 - stdout
 - stderr
 
@@ -128,6 +133,7 @@ backend/data/test_platform.db
 - 展示总执行次数、通过次数、失败次数和通过率
 - 用 ECharts 展示 suite 执行分布
 - 展示 stdout / stderr，便于定位失败原因
+- 执行详情页支持打开历史 Allure 报告
 
 前端启动：
 
@@ -144,6 +150,23 @@ http://127.0.0.1:5173
 
 ## 4. 简历亮点
 
+## 4. Jenkins CI 集成
+
+已新增 `Jenkinsfile`，支持在 Jenkins 中按参数执行不同测试套件，并归档 Allure 原始结果。
+
+Pipeline 参数：
+
+- `TEST_SUITE`: `api` / `smoke` / `regression` / `ui` / `all`
+- `BASE_URL`: JPetStore 被测地址
+
+核心流程：
+
+```text
+创建虚拟环境 -> 安装依赖 -> 执行 pytest -> 归档 Allure 结果
+```
+
+## 5. 简历亮点
+
 可描述为：
 
-基于 JPetStore 电商系统搭建自动化测试平台，使用 Python + pytest + Playwright 实现 UI 自动化测试，集成 Allure 生成可视化测试报告，并通过 FastAPI + SQLite 封装测试任务执行与历史记录能力，使用 Vue 3 + Element Plus 实现测试执行、历史查询、详情查看和质量数据可视化页面。
+基于 JPetStore 电商系统搭建自动化测试平台，使用 Python + pytest + Playwright 实现 UI 自动化测试，集成 Allure 生成可视化测试报告，并通过 FastAPI + SQLite 封装测试任务执行与历史记录能力，使用 Vue 3 + Element Plus 实现测试执行、历史查询、详情查看和质量数据可视化页面；同时接入 Jenkins Pipeline，实现参数化自动化回归测试和测试结果归档。

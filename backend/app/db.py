@@ -32,13 +32,28 @@ def init_db() -> None:
                 started_at TEXT NOT NULL,
                 finished_at TEXT NOT NULL,
                 duration_seconds REAL NOT NULL,
+                run_uid TEXT,
                 allure_results_dir TEXT NOT NULL,
+                allure_report_dir TEXT,
+                allure_report_url TEXT,
                 stdout TEXT,
                 stderr TEXT,
                 created_at TEXT NOT NULL
             )
             """
         )
+        existing_columns = {
+            row["name"]
+            for row in connection.execute("PRAGMA table_info(test_runs)").fetchall()
+        }
+        migrations = {
+            "run_uid": "ALTER TABLE test_runs ADD COLUMN run_uid TEXT",
+            "allure_report_dir": "ALTER TABLE test_runs ADD COLUMN allure_report_dir TEXT",
+            "allure_report_url": "ALTER TABLE test_runs ADD COLUMN allure_report_url TEXT",
+        }
+        for column, statement in migrations.items():
+            if column not in existing_columns:
+                connection.execute(statement)
 
 
 def insert_test_run(record: dict[str, Any]) -> int:
@@ -52,7 +67,10 @@ def insert_test_run(record: dict[str, Any]) -> int:
         "started_at",
         "finished_at",
         "duration_seconds",
+        "run_uid",
         "allure_results_dir",
+        "allure_report_dir",
+        "allure_report_url",
         "stdout",
         "stderr",
         "created_at",
@@ -84,7 +102,10 @@ def list_test_runs(limit: int = 20, offset: int = 0) -> list[dict[str, Any]]:
                 started_at,
                 finished_at,
                 duration_seconds,
+                run_uid,
                 allure_results_dir,
+                allure_report_dir,
+                allure_report_url,
                 created_at
             FROM test_runs
             ORDER BY id DESC

@@ -23,10 +23,13 @@ class TestRunResponse(BaseModel):
     command: str
     environment: str | None = None
     base_url: str | None = None
+    run_uid: str | None = None
     started_at: datetime
     finished_at: datetime
     duration_seconds: float
     allure_results_dir: str
+    allure_report_dir: str | None = None
+    allure_report_url: str | None = None
     created_at: datetime | None = None
 
 

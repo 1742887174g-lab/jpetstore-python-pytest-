@@ -27,6 +27,13 @@
             执行测试
           </el-button>
           <el-button :icon="Clock" @click="$router.push('/history')">查看历史</el-button>
+          <el-button
+            :icon="Document"
+            :disabled="!lastRun?.allure_report_url"
+            @click="openReport(lastRun.allure_report_url)"
+          >
+            查看报告
+          </el-button>
         </el-form-item>
       </el-form>
 
@@ -48,6 +55,16 @@
         <el-descriptions-item label="退出码">{{ lastRun.exit_code }}</el-descriptions-item>
         <el-descriptions-item label="耗时">{{ formatDuration(lastRun.duration_seconds) }}</el-descriptions-item>
         <el-descriptions-item label="开始时间">{{ formatDateTime(lastRun.started_at) }}</el-descriptions-item>
+        <el-descriptions-item label="Allure 报告" :span="2">
+          <el-link
+            v-if="lastRun.allure_report_url"
+            type="primary"
+            @click="openReport(lastRun.allure_report_url)"
+          >
+            {{ lastRun.allure_report_url }}
+          </el-link>
+          <span v-else>未生成</span>
+        </el-descriptions-item>
         <el-descriptions-item label="命令" :span="2">{{ lastRun.command }}</el-descriptions-item>
       </el-descriptions>
     </div>
@@ -57,10 +74,10 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { Clock, VideoPlay } from "@element-plus/icons-vue";
+import { Clock, Document, VideoPlay } from "@element-plus/icons-vue";
 
 import { createTestRun } from "../api";
-import { formatDateTime, formatDuration, statusTagType } from "../utils";
+import { formatDateTime, formatDuration, openReport, statusTagType } from "../utils";
 
 const form = reactive({
   suite: "smoke",

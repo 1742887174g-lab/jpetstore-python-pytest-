@@ -2,7 +2,17 @@
   <div>
     <div class="toolbar">
       <el-button :icon="ArrowLeft" @click="$router.push('/history')">返回历史</el-button>
-      <el-button :icon="Refresh" @click="loadRun" :loading="loading">刷新</el-button>
+      <div>
+        <el-button
+          type="primary"
+          :icon="Document"
+          :disabled="!run?.allure_report_url"
+          @click="openReport(run.allure_report_url)"
+        >
+          查看 Allure 报告
+        </el-button>
+        <el-button :icon="Refresh" @click="loadRun" :loading="loading">刷新</el-button>
+      </div>
     </div>
 
     <div class="panel section" v-loading="loading">
@@ -21,8 +31,21 @@
           <el-descriptions-item label="结束时间">{{ formatDateTime(run.finished_at) }}</el-descriptions-item>
           <el-descriptions-item label="耗时">{{ formatDuration(run.duration_seconds) }}</el-descriptions-item>
           <el-descriptions-item label="创建时间">{{ formatDateTime(run.created_at) }}</el-descriptions-item>
-          <el-descriptions-item label="Allure 目录" :span="2">
+          <el-descriptions-item label="Allure 结果目录" :span="2">
             {{ run.allure_results_dir }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Allure 报告目录" :span="2">
+            {{ run.allure_report_dir || "未生成" }}
+          </el-descriptions-item>
+          <el-descriptions-item label="Allure 报告地址" :span="2">
+            <el-link
+              v-if="run.allure_report_url"
+              type="primary"
+              @click="openReport(run.allure_report_url)"
+            >
+              {{ run.allure_report_url }}
+            </el-link>
+            <span v-else>-</span>
           </el-descriptions-item>
           <el-descriptions-item label="执行命令" :span="2">
             {{ run.command }}
@@ -49,10 +72,10 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { ArrowLeft, Refresh } from "@element-plus/icons-vue";
+import { ArrowLeft, Document, Refresh } from "@element-plus/icons-vue";
 
 import { getTestRun } from "../api";
-import { formatDateTime, formatDuration, statusTagType } from "../utils";
+import { formatDateTime, formatDuration, openReport, statusTagType } from "../utils";
 
 const props = defineProps({
   id: {

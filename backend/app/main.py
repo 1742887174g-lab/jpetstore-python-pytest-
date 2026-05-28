@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.db import get_test_run, init_db, list_test_runs
 from app.schemas import TestRunDetail, TestRunRequest, TestRunResponse
@@ -9,6 +12,9 @@ from app.services.test_runner import run_pytest_suite
 
 
 app = FastAPI(title="JPetStore Test Platform API")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+REPORTS_DIR = REPO_ROOT / "automation" / "reports" / "runs"
+REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +26,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/reports", StaticFiles(directory=REPORTS_DIR), name="reports")
 
 
 @app.on_event("startup")

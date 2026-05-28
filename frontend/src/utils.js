@@ -15,3 +15,10 @@ export function formatDuration(value) {
 export function statusTagType(status) {
   return status === "passed" ? "success" : "danger";
 }
+
+export function openReport(reportUrl) {
+  if (!reportUrl) {
+    return;
+  }
+  window.open(reportUrl, "_blank", "noopener,noreferrer");
+}

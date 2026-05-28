@@ -157,6 +157,28 @@ cd E:\jpetstore-test
 .\run_allure_report.cmd
 ```
 
+## Jenkins CI
+
+项目已提供 Jenkins Pipeline：
+
+```text
+Jenkinsfile
+```
+
+Jenkins 可通过参数选择执行：
+
+- `api`
+- `smoke`
+- `ui`
+- `regression`
+- `all`
+
+详细说明见：
+
+```text
+docs/jenkins-ci.md
+```
+
 ## 开发环境
 
 安装自动化测试依赖：
