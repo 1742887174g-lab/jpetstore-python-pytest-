@@ -8,6 +8,7 @@
 - Allure 作为测试报告
 - FastAPI 作为测试平台后端
 - SQLite 保存测试执行历史
+- Vue 3 + Element Plus 作为测试平台前端
 
 ## 项目结构
 
@@ -15,6 +16,7 @@
 jpetstore-test
 ├── automation       # pytest + allure 自动化测试工程
 ├── backend          # 测试平台后端，负责触发测试和记录结果
+├── frontend         # Vue 3 测试平台前端
 ├── docs             # 项目设计文档
 └── run_*.cmd        # 一键运行脚本
 ```
@@ -89,6 +91,35 @@ GET http://127.0.0.1:8000/test-runs
 GET http://127.0.0.1:8000/test-runs/{id}
 ```
 
+## 运行测试平台前端
+
+先启动后端：
+
+```powershell
+cd E:\jpetstore-test
+.\run_backend.cmd
+```
+
+再打开一个新的 PowerShell 启动前端：
+
+```powershell
+cd E:\jpetstore-test
+.\run_frontend.cmd
+```
+
+前端地址：
+
+```text
+http://127.0.0.1:5173
+```
+
+当前页面包括：
+
+- 仪表盘：展示执行次数、通过率、Suite 分布和最近执行
+- 执行测试：选择 suite 并触发测试
+- 执行历史：查看历史记录
+- 执行详情：查看命令、stdout、stderr 和 Allure 结果目录
+
 ## 执行自动化测试
 
 API 测试：
@@ -140,6 +171,13 @@ cd E:\jpetstore-test
 ```powershell
 cd E:\jpetstore-test
 .\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
+```
+
+安装前端依赖：
+
+```powershell
+cd E:\jpetstore-test\frontend
+npm install
 ```
 
 修改 JPetStore 地址：

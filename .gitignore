@@ -20,3 +20,6 @@ allure-results/
 tools/
 
 backend/data/
+
+frontend/node_modules/
+frontend/dist/

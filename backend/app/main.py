@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import get_test_run, init_db, list_test_runs
 from app.schemas import TestRunDetail, TestRunRequest, TestRunResponse
@@ -8,6 +9,17 @@ from app.services.test_runner import run_pytest_suite
 
 
 app = FastAPI(title="JPetStore Test Platform API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event("startup")

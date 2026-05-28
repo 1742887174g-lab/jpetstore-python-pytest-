@@ -105,22 +105,45 @@ backend/data/test_platform.db
 
 ## 3. 测试平台前端
 
-建议后续使用：
+技术栈：
 
 - Vue 3
 - Element Plus
 - ECharts
+- Axios
+- Vite
 
-核心页面：
+已实现页面：
 
 - 首页仪表盘
-- 环境配置
-- 测试任务
+- 测试执行
 - 执行历史
-- 报告入口
+- 执行详情
+
+核心能力：
+
+- 调用 `GET /test-runs` 展示执行历史
+- 调用 `GET /test-runs/{id}` 展示执行详情
+- 调用 `POST /test-runs` 触发测试执行
+- 展示总执行次数、通过次数、失败次数和通过率
+- 用 ECharts 展示 suite 执行分布
+- 展示 stdout / stderr，便于定位失败原因
+
+前端启动：
+
+```powershell
+cd E:\jpetstore-test
+.\run_frontend.cmd
+```
+
+访问地址：
+
+```text
+http://127.0.0.1:5173
+```
 
 ## 4. 简历亮点
 
 可描述为：
 
-基于 JPetStore 电商系统搭建自动化测试平台，使用 Python + pytest + Playwright 实现 UI 自动化测试，集成 Allure 生成可视化测试报告，并通过 FastAPI 封装测试任务执行能力，实现测试执行、结果落库、历史查询、失败截图和报告查看的自动化闭环。
+基于 JPetStore 电商系统搭建自动化测试平台，使用 Python + pytest + Playwright 实现 UI 自动化测试，集成 Allure 生成可视化测试报告，并通过 FastAPI + SQLite 封装测试任务执行与历史记录能力，使用 Vue 3 + Element Plus 实现测试执行、历史查询、详情查看和质量数据可视化页面。
