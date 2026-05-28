@@ -18,3 +18,5 @@ allure-results/
 .env
 
 tools/
+
+backend/data/

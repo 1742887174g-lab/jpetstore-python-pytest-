@@ -1,23 +1,25 @@
-# JPetStore Automated Test Platform
+# JPetStore 自动化测试平台
 
-这是一个面向 JPetStore 的自动化测试平台项目，第一版采用：
+这是一个面向 JPetStore 的自动化测试平台项目，当前使用：
 
 - Python + pytest 作为自动化测试框架
-- Allure 作为测试报告
 - Playwright 作为 Web UI 自动化驱动
-- requests 作为 HTTP/API 健康检查能力
-- FastAPI 作为测试平台后端雏形
+- requests 作为接口测试能力
+- Allure 作为测试报告
+- FastAPI 作为测试平台后端
+- SQLite 保存测试执行历史
 
-## Project Layout
+## 项目结构
 
 ```text
 jpetstore-test
 ├── automation       # pytest + allure 自动化测试工程
 ├── backend          # 测试平台后端，负责触发测试和记录结果
-└── docs             # 项目设计文档
+├── docs             # 项目设计文档
+└── run_*.cmd        # 一键运行脚本
 ```
 
-## Automation Scope
+## 自动化覆盖范围
 
 当前自动化框架已覆盖：
 
@@ -36,10 +38,9 @@ jpetstore-test
 - `ui`: Web UI 自动化用例
 - `smoke`: 核心冒烟测试
 - `regression`: 回归测试，包含注册、下单等有业务副作用的流程
+- `all`: 全量测试
 
-## Quick Start
-
-### 运行测试平台后端
+## 运行测试平台后端
 
 ```powershell
 cd E:\jpetstore-test
@@ -60,7 +61,35 @@ http://127.0.0.1:8000/docs
 }
 ```
 
-### 执行自动化测试
+也可以指定环境或临时覆盖被测地址：
+
+```json
+{
+  "suite": "smoke",
+  "environment": "local",
+  "base_url": "http://localhost:8080/jpetstore"
+}
+```
+
+测试执行结束后，后端会把执行记录保存到 SQLite：
+
+```text
+backend/data/test_platform.db
+```
+
+查询执行历史：
+
+```text
+GET http://127.0.0.1:8000/test-runs
+```
+
+查询单次执行详情：
+
+```text
+GET http://127.0.0.1:8000/test-runs/{id}
+```
+
+## 执行自动化测试
 
 API 测试：
 
@@ -90,50 +119,38 @@ cd E:\jpetstore-test
 .\run_regression_tests.cmd
 ```
 
-### 查看 Allure 报告
+查看 Allure 报告：
 
 ```powershell
 cd E:\jpetstore-test
 .\run_allure_report.cmd
 ```
 
-## Development Setup
+## 开发环境
 
 安装自动化测试依赖：
 
 ```powershell
-cd automation
-python -m pip install -r requirements.txt
-python -m playwright install chromium
+cd E:\jpetstore-test
+.\.venv\Scripts\python.exe -m pip install -r automation\requirements.txt
 ```
 
-修改 `automation/config/settings.yaml` 中的 `base_url`，指向你的 JPetStore 地址。
-
-执行测试：
+安装后端依赖：
 
 ```powershell
-cd automation
-python run_tests.py --suite smoke
+cd E:\jpetstore-test
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
 ```
 
-生成并打开 Allure 报告：
-
-```powershell
-allure serve reports/allure-results
-```
-
-启动平台后端：
-
-```powershell
-cd backend
-python -m pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-## MVP Scope
-
-第一阶段目标是打通完整闭环：
+修改 JPetStore 地址：
 
 ```text
-配置被测环境 -> 执行 pytest 测试 -> 生成 Allure 结果 -> 后端记录执行结果
+automation/config/settings.yaml
+```
+
+或执行时临时覆盖：
+
+```powershell
+cd E:\jpetstore-test\automation
+..\.venv\Scripts\python.exe run_tests.py --suite smoke --base-url http://localhost:8080/jpetstore
 ```
